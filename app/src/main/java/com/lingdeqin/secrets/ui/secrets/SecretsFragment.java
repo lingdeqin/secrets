@@ -58,14 +58,13 @@ public class SecretsFragment extends Fragment {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
 
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_secrets_list, container, false);
-
+        fab = getActivity().findViewById(R.id.fab);
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -76,7 +75,6 @@ public class SecretsFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             recyclerView.setAdapter(new MySecretsRecyclerViewAdapter(DummyContent.ITEMS,context,this));
-
         }
         return view;
     }
@@ -90,8 +88,6 @@ public class SecretsFragment extends Fragment {
     public void onStart() {
         super.onStart();
         Log.i(TAG, "onStart: ");
-
-        
     }
 
     @Override
@@ -104,16 +100,16 @@ public class SecretsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.i(TAG, "onActivityCreated: ");
-        MainActivity parentActivity = (MainActivity) getActivity();
-        parentActivity.fabVisible();
+        //fab.setVisibility(View.VISIBLE);
+        fab.show();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         Log.i(TAG, "onDestroyView: ");
-        MainActivity parentActivity = (MainActivity) getActivity();
-        parentActivity.fabInVisible();
+        //fab.setVisibility(View.INVISIBLE);
+        fab.hide();
     }
 
     @Override

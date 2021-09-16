@@ -10,6 +10,8 @@ import android.view.Menu;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.lingdeqin.secrets.core.room.AppDatabase;
+import com.lingdeqin.secrets.core.room.entity.Secret;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
@@ -19,6 +21,18 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.room.Room;
+
+import java.util.List;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleEmitter;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.core.SingleOnSubscribe;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,9 +56,8 @@ public class MainActivity extends AppCompatActivity {
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_secrets, R.id.nav_home,R.id.nav_secret)
-                .setDrawerLayout(drawer)
+                .setOpenableLayout(drawer)
                 .build();
-
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -60,14 +73,8 @@ public class MainActivity extends AppCompatActivity {
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View view) {
-
                 //navController.navigate(R.id.nav_settings);
-                Log.i(TAG, "onClick: "+navController.getGraph().getDisplayName());//.navigate(R.id.nav_settings);
-
                 navController.navigate(R.id.nav_secret);
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        //.setAction("Action", null).show();
-
             }
         });
 
@@ -103,9 +110,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_settings:
                 navController.navigate(R.id.nav_settings);
                 break;
-
         }
-
         return super.onOptionsItemSelected(item);
     }
 

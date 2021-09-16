@@ -4,6 +4,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,20 +42,14 @@ public class MySecretsRecyclerViewAdapter extends RecyclerView.Adapter<MySecrets
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).id);
         holder.mContentView.setText(mValues.get(position).content);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(mContext, "position:"+position+", id:"+mValues.get(position).id
-                     //   +", content:"+mValues.get(position).content+
-                    //    ", details:"+mValues.get(position).details, Toast.LENGTH_SHORT).show();
-               // navController = Navigation.findNavController(MainActivity., R.id.nav_host_fragment);
-                //NavController controller = Navigation.findNavController(MainActivity.this, R.id.);
                 secretsFragment.navSecret(mValues.get(position).id);
-
             }
         });
     }

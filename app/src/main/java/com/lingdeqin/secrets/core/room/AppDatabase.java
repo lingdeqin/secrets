@@ -23,7 +23,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase dataBases;
 
-    private static final String DATA_TABLE_NAME="zero_db";
+    private static final String DATA_TABLE_NAME="zero-db";
 
     private final MutableLiveData<Boolean> mIsDatabaseCreated = new MutableLiveData<>();
 
@@ -46,6 +46,7 @@ public abstract class AppDatabase extends RoomDatabase {
      * The SQLite database is only created when it's accessed for the first time.
      */
     private static AppDatabase buildDatabase(final Context appContext) {
+        // AppDatabase appDatabase = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "zero-db").build();
         return Room.databaseBuilder(appContext, AppDatabase.class, DATA_TABLE_NAME)
                 .addCallback(new Callback() {
                     @Override
