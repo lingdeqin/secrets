@@ -1,7 +1,6 @@
 package com.lingdeqin.secrets.ui.secrets;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
@@ -10,25 +9,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.lingdeqin.secrets.MainActivity;
 import com.lingdeqin.secrets.R;
-import com.lingdeqin.secrets.ui.secrets.dummy.DummyContent.DummyItem;
+import com.lingdeqin.secrets.core.room.entity.Secret;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem}.
+ * {@link RecyclerView.Adapter} that can display a {@link Secret}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class MySecretsRecyclerViewAdapter extends RecyclerView.Adapter<MySecretsRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<Secret> mValues;
     private Context mContext = null;
     private SecretsFragment secretsFragment = null;
 
-    public MySecretsRecyclerViewAdapter(List<DummyItem> items, Context context, SecretsFragment sf) {
+    public MySecretsRecyclerViewAdapter(List<Secret> items, Context context, SecretsFragment sf) {
         mValues = items;
         mContext = context;
         secretsFragment = sf;
@@ -44,12 +41,12 @@ public class MySecretsRecyclerViewAdapter extends RecyclerView.Adapter<MySecrets
     @Override
     public void onBindViewHolder(final ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(mValues.get(position).domain);
+        holder.mContentView.setText(mValues.get(position).account);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                secretsFragment.navSecret(mValues.get(position).id);
+                secretsFragment.navSecret(mValues.get(position).account);
             }
         });
     }
@@ -63,7 +60,7 @@ public class MySecretsRecyclerViewAdapter extends RecyclerView.Adapter<MySecrets
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public Secret mItem;
 
         public ViewHolder(View view) {
             super(view);

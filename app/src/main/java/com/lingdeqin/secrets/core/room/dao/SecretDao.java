@@ -24,7 +24,7 @@ public interface SecretDao {
     Flowable<Secret> getSecretByRxJava();
 
     @Query("SELECT * FROM secret")
-    LiveData<Secret> getSecretByLiveData();
+    LiveData<List<Secret>> getSecretByLiveData();
 
     @Insert
     void insert(Secret secret);

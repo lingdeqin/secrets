@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +20,11 @@ import android.view.ViewGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.lingdeqin.secrets.MainActivity;
 import com.lingdeqin.secrets.R;
+import com.lingdeqin.secrets.core.room.entity.Secret;
 import com.lingdeqin.secrets.ui.secrets.dummy.DummyContent;
+import com.lingdeqin.secrets.viewmodel.SecretsViewModel;
+
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -32,6 +38,8 @@ public class SecretsFragment extends Fragment {
     private int mColumnCount = 1;
 
     private FloatingActionButton fab;
+
+    private SecretsViewModel secretsViewModel;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -65,6 +73,7 @@ public class SecretsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_secrets_list, container, false);
         fab = getActivity().findViewById(R.id.fab);
+        SecretsFragment secretsFragment = this;
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -74,7 +83,14 @@ public class SecretsFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MySecretsRecyclerViewAdapter(DummyContent.ITEMS,context,this));
+            secretsViewModel = new ViewModelProvider(this.getActivity()).get(SecretsViewModel.class);
+            secretsViewModel.getSecrets().observe(this.getActivity(), new Observer<List<Secret>>() {
+                @Override
+                public void onChanged(List<Secret> list) {
+                    recyclerView.setAdapter(new MySecretsRecyclerViewAdapter(list,context,secretsFragment));
+                }
+            });
+
         }
         return view;
     }
