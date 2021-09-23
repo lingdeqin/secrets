@@ -21,7 +21,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.lingdeqin.secrets.MainActivity;
 import com.lingdeqin.secrets.R;
 import com.lingdeqin.secrets.core.room.entity.Secret;
-import com.lingdeqin.secrets.ui.secrets.dummy.DummyContent;
 import com.lingdeqin.secrets.viewmodel.SecretsViewModel;
 
 import java.util.List;
@@ -116,7 +115,6 @@ public class SecretsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.i(TAG, "onActivityCreated: ");
-        //fab.setVisibility(View.VISIBLE);
         fab.show();
     }
 
@@ -124,7 +122,6 @@ public class SecretsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         Log.i(TAG, "onDestroyView: ");
-        //fab.setVisibility(View.INVISIBLE);
         fab.hide();
     }
 

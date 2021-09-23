@@ -40,6 +40,7 @@ public class MySecretsRecyclerViewAdapter extends RecyclerView.Adapter<MySecrets
         secretsFragment = sf;
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -70,7 +71,7 @@ public class MySecretsRecyclerViewAdapter extends RecyclerView.Adapter<MySecrets
         return mValues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
