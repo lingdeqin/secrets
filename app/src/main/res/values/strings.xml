@@ -19,6 +19,11 @@
     <string name="secret_url">url</string>
     <string name="secret_remark">备注</string>
 
+
+    <string name="auth">主密码</string>
+    <string name="auth_first">请设置主密码</string>
+    <string name="auth_unlock">解锁</string>
+
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>
@@ -38,7 +43,6 @@
     <string name="prompt_email">prompt_email</string>
     <string name="prompt_password">prompt_password</string>
     <string name="action_sign_in_short">action_sign_in_short</string>
-
 
 
 </resources>
