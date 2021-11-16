@@ -9,17 +9,14 @@ public class MyApplication extends Application {
 
     private static Context context;
 
-    //private static AppExecutors mAppExecutors;
-
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
         context = getApplicationContext();
-        //mAppExecutors = new AppExecutors();
     }
 
-    public static Context getApplication() {
+    public static Application getApplication() {
         return instance;
     }
 

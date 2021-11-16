@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +23,8 @@ import com.lingdeqin.secrets.R;
 import com.lingdeqin.secrets.core.room.AppDatabase;
 import com.lingdeqin.secrets.core.room.entity.Secret;
 import com.lingdeqin.secrets.utils.UIUtil;
+
+import java.nio.charset.StandardCharsets;
 
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleEmitter;
@@ -73,6 +77,7 @@ public class SecretFragment extends Fragment {
 
     private void saveSecret(){
 
+
         Single.create(new SingleOnSubscribe<Integer>() {
             @Override
             public void subscribe(@io.reactivex.rxjava3.annotations.NonNull SingleEmitter<Integer> emitter) throws Throwable {
@@ -93,7 +98,7 @@ public class SecretFragment extends Fragment {
 
                     secret.domain = editDomain.getText().toString();
                     secret.account = editAccount.getText().toString();
-                    secret.password = editPassword.getText().toString();
+                    secret.password = editPassword.getText().toString().getBytes(StandardCharsets.UTF_8);
                     secret.url = editUrl.getText().toString();
                     secret.remark = editRemark.getText().toString();
 

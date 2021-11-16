@@ -12,6 +12,8 @@
     <string name="menu_secret">添加</string>
     <string name="menu_settings">设置</string>
 
+    <string name="btn_confirm">确定</string>
+
     <!-- secret -->
     <string name="secret_domain">Domain</string>
     <string name="secret_account">用户名</string>
@@ -19,10 +21,13 @@
     <string name="secret_url">url</string>
     <string name="secret_remark">备注</string>
 
-
     <string name="auth">主密码</string>
     <string name="auth_first">请设置主密码</string>
     <string name="auth_unlock">解锁</string>
+    <string name="auth_main_first">请输入主密码</string>
+    <string name="auth_main_second">请再次输入主密码</string>
+    <string name="auth_salt">请输入盐</string>
+    <string name="auth_re_salt">请再次输入盐</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
@@ -43,6 +48,14 @@
     <string name="prompt_email">prompt_email</string>
     <string name="prompt_password">prompt_password</string>
     <string name="action_sign_in_short">action_sign_in_short</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
 
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
 </resources>

@@ -14,7 +14,9 @@ public class Secret {
     @ColumnInfo(name = "account")
     public String account;
     @ColumnInfo(name = "password")
-    public String password;
+    public byte[] password;
+    @ColumnInfo(name = "iv")
+    public byte[] iv;
     @ColumnInfo(name = "url")
     public String url;
     @ColumnInfo(name = "remark")
