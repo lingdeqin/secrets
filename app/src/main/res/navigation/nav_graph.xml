@@ -11,10 +11,10 @@
         android:label="@string/menu_secrets"
         tools:layout="@layout/fragment_secrets" />
     <fragment
-        android:id="@+id/nav_home"
-        android:name="com.lingdeqin.secrets.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" >
+        android:id="@+id/nav_authenticator"
+        android:name="com.lingdeqin.secrets.ui.authenticator.AuthenticatorFragment"
+        android:label="@string/menu_authenticator"
+        tools:layout="@layout/fragment_authenticator" >
     </fragment>
     <fragment
         android:id="@+id/nav_secret"
@@ -26,6 +26,10 @@
         android:name="com.lingdeqin.secrets.ui.settings.SettingsFragment"
         android:label="@string/menu_settings"
         />
-
+    <fragment
+        android:id="@+id/nav_no_secret"
+        android:name="com.lingdeqin.secrets.ui.nosecret.NoSecretFragment"
+        android:label="@string/menu_no_secret"
+        />
 
 </navigation>

@@ -6,11 +6,13 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">设置</string>
-
+a
     <string name="menu_secrets">列表</string>
-    <string name="menu_home">Home</string>
+    <string name="menu_authenticator">身份验证器</string>
     <string name="menu_secret">添加</string>
+    <string name="menu_no_secret">查看</string>
     <string name="menu_settings">设置</string>
+
 
     <string name="btn_confirm">确定</string>
 
@@ -57,5 +59,7 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

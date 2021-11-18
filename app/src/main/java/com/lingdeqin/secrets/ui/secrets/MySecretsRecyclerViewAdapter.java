@@ -61,7 +61,7 @@ public class MySecretsRecyclerViewAdapter extends RecyclerView.Adapter<MySecrets
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                secretsFragment.navSecret(mValues.get(position).account);
+                secretsFragment.navSecret(mValues.get(position).sid);
             }
         });
     }

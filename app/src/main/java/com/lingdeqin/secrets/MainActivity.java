@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_secrets, R.id.nav_home, R.id.nav_secret)
+                R.id.nav_secrets, R.id.nav_authenticator, R.id.nav_secret)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -82,19 +82,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void fabInVisible(){
-        fab.setVisibility(View.INVISIBLE);
-    }
-
-    public void fabVisible(){
-        fab.setVisibility(View.VISIBLE);
-    }
-
-    public void navSecret(String id){
+    public void navSecret(int sid){
         Bundle bundle = new Bundle();
-        bundle.putString("id", id);
-
-        navController.navigate(R.id.nav_secret,bundle);
+        bundle.putInt("sid", sid);
+        navController.navigate(R.id.nav_no_secret,bundle);
     }
 
     @Override

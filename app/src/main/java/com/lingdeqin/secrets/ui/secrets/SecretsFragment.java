@@ -94,9 +94,9 @@ public class SecretsFragment extends Fragment {
         return view;
     }
 
-    public void navSecret(String id){
+    public void navSecret(int sid){
         MainActivity parentActivity = (MainActivity) getActivity();
-        parentActivity.navSecret(id);
+        parentActivity.navSecret(sid);
     }
 
     @Override

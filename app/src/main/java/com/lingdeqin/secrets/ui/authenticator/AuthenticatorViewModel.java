@@ -1,16 +1,16 @@
-package com.lingdeqin.secrets.ui.home;
+package com.lingdeqin.secrets.ui.authenticator;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class HomeViewModel extends ViewModel {
+public class AuthenticatorViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public HomeViewModel() {
+    public AuthenticatorViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+        mText.setValue("This is authenticator fragment");
     }
 
     public LiveData<String> getText() {
