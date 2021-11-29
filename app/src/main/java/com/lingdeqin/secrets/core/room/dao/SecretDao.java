@@ -20,8 +20,11 @@ public interface SecretDao {
     @Query("SELECT * FROM secret")
     List<Secret> getAll();
 
+//    @Query("SELECT * FROM secret where sid = :sid")
+//    Secret getSecretBySid(int sid);
+
     @Query("SELECT * FROM secret where sid = :sid")
-    Secret getSecretBySid(int sid);
+    Flowable<Secret> getSecretBySid(int sid);
 
     @Query("SELECT * FROM secret")
     Flowable<Secret> getSecretByRxJava();
