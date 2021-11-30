@@ -10,6 +10,9 @@ import androidx.fragment.app.Fragment;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,12 +22,25 @@ import android.widget.EditText;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.lingdeqin.secrets.R;
+import com.lingdeqin.secrets.base.MyApplication;
 import com.lingdeqin.secrets.core.room.AppDatabase;
 import com.lingdeqin.secrets.core.room.entity.Secret;
 import com.lingdeqin.secrets.security.KeyStoreManager;
 
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleEmitter;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.core.SingleOnSubscribe;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.internal.subscribers.BlockingBaseSubscriber;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -100,9 +116,30 @@ public class NoSecretFragment extends Fragment {
         btnCopy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ClipboardManager cm = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData mClipData = ClipData.newPlainText("Password", secretPassword.getText());
+                ClipboardManager cm = (ClipboardManager) MyApplication.getApplication().getSystemService(Context.CLIPBOARD_SERVICE);
+                cm.clearPrimaryClip();
+
+                ClipData mClipData = ClipData.newPlainText("secret", secretPassword.getText());
                 cm.setPrimaryClip(mClipData);
+
+                Observable.timer(10, TimeUnit.SECONDS)
+                        .subscribe(new Observer<Long>() {
+                            @Override
+                            public void onSubscribe(@NonNull Disposable d) {
+                            }
+                            @Override
+                            public void onNext(@NonNull Long aLong) {
+                                ClipboardManager cm = (ClipboardManager) MyApplication.getApplication().getSystemService(Context.CLIPBOARD_SERVICE);
+                                cm.clearPrimaryClip();
+                            }
+                            @Override
+                            public void onError(@NonNull Throwable e) {
+                            }
+                            @Override
+                            public void onComplete() {
+                            }
+                        });
+
                 Snackbar.make(getView(),"已复制到剪切板",Snackbar.LENGTH_LONG).show();
             }
         });
@@ -125,10 +162,71 @@ public class NoSecretFragment extends Fragment {
 
     }
 
+    private void deleteSecret(){
+        int sid = bundle.getInt("sid");
+        
+
+        Single.create(new SingleOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(@NonNull SingleEmitter<Integer> emitter) throws Throwable {
+                Secret secret = new Secret();
+                secret.sid = sid;
+                AppDatabase appDatabase = AppDatabase.getInstance();
+                int r = appDatabase.secretDao().deleteSecret(secret);
+                Log.i(TAG, "subscribe: r"+r);
+                emitter.onSuccess(1);
+
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.newThread())
+                .subscribe(new SingleObserver<Integer>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {}
+
+            @Override
+            public void onSuccess(@NonNull Integer integer) {
+                Snackbar.make(getView(),"已删除",Snackbar.LENGTH_LONG).show();
+                getParentFragmentManager().popBackStack();
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Snackbar.make(getView(),"删除失败"+e.getMessage(),Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_no_secret, container, false);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@androidx.annotation.NonNull Menu menu, @androidx.annotation.NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.delete, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@androidx.annotation.NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.menu_delete:
+                deleteSecret();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy() {
+        ClipboardManager cm = (ClipboardManager) MyApplication.getApplication().getSystemService(Context.CLIPBOARD_SERVICE);
+        cm.clearPrimaryClip();
+        super.onDestroy();
     }
 }

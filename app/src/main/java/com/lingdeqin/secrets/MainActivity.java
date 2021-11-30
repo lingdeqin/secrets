@@ -1,6 +1,8 @@
 package com.lingdeqin.secrets;
 
 import android.annotation.SuppressLint;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -10,6 +12,7 @@ import android.view.Menu;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.lingdeqin.secrets.base.MyApplication;
 import com.lingdeqin.secrets.core.room.AppDatabase;
 import com.lingdeqin.secrets.core.room.entity.Secret;
 
@@ -137,4 +140,10 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "onRestart: ");
     }
 
+    @Override
+    protected void onDestroy() {
+        ClipboardManager cm = (ClipboardManager) MyApplication.getApplication().getSystemService(Context.CLIPBOARD_SERVICE);
+        cm.clearPrimaryClip();
+        super.onDestroy();
+    }
 }

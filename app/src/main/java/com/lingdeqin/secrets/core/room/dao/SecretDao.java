@@ -36,9 +36,16 @@ public interface SecretDao {
     void insert(Secret secret);
 
     @Update
-    void updateUsers(Secret... secrets);
+    int updateSecret(Secret secret);
 
     @Delete
-    void deleteUsers(Secret... secrets);
+    int deleteSecret(Secret secret);
+
+    @Update
+    int updateSecrets(Secret... secrets);
+
+    @Delete
+    int deleteSecrets(Secret... secrets);
+
 
 }

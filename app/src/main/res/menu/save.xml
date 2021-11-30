@@ -5,8 +5,8 @@
     android:id="@+id/nav_menu"
     tools:showIn="navigation_view">
     <item
-        android:id="@+id/nav_save"
+        android:id="@+id/menu_save"
         android:orderInCategory="100"
-        android:title="保存"
+        android:title="@string/menu_save"
         app:showAsAction="ifRoom" />
 </menu>

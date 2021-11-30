@@ -2,14 +2,11 @@ package com.lingdeqin.secrets.ui.secret;
 
 import androidx.lifecycle.ViewModelProvider;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,8 +23,6 @@ import com.lingdeqin.secrets.core.room.AppDatabase;
 import com.lingdeqin.secrets.core.room.entity.Secret;
 import com.lingdeqin.secrets.security.KeyStoreManager;
 import com.lingdeqin.secrets.utils.UIUtil;
-
-import java.nio.charset.StandardCharsets;
 
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleEmitter;
@@ -64,14 +59,14 @@ public class SecretFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
-        inflater.inflate(R.menu.secret, menu);
+        inflater.inflate(R.menu.save, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()){
-            case R.id.nav_save:
+            case R.id.menu_save:
                 saveSecret();
                 break;
         }
