@@ -55,6 +55,7 @@ public class AuthActivity extends AppCompatActivity {
 
     private EditText editAuth;
     private Button btnUnlock;
+    private Button btnFingerprint;
 
 
     @Override
@@ -63,23 +64,14 @@ public class AuthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_auth);
         editAuth = findViewById(R.id.edit_auth);
         btnUnlock = findViewById(R.id.btn_unlock);
+        btnFingerprint = findViewById(R.id.btn_fingerprint);
         CheckBox cb = findViewById(R.id.is_visible_password);
 
         KeyStoreManager keyStoreManager = KeyStoreManager.getInstance();
         if (keyStoreManager.containsMasterKey()){
-            AuthManager.getInstance().biometric(this, new AuthManager.AuthCallBack() {
-                @Override
-                public void onSuccess() {
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                }
-                @Override
-                public void onFailure(String errMsg) {
-
-                }
-            });
+            biometric();
         }
+
         cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -92,6 +84,13 @@ public class AuthActivity extends AppCompatActivity {
                             | InputType.TYPE_TEXT_VARIATION_PASSWORD
                             | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                 }
+            }
+        });
+
+        btnFingerprint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                biometric();
             }
         });
 
@@ -129,7 +128,6 @@ public class AuthActivity extends AppCompatActivity {
                     }else{
                         Log.i(TAG, "onClick: err");
                     }
-
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 } catch (NoSuchPaddingException e) {
@@ -152,6 +150,21 @@ public class AuthActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void biometric(){
+        AuthManager.getInstance().biometric(this, new AuthManager.AuthCallBack() {
+            @Override
+            public void onSuccess() {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+            @Override
+            public void onFailure(String errMsg) {
+
+            }
+        });
     }
 
 }
