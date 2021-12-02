@@ -29,10 +29,7 @@ import java.util.Map;
 
 public class SignUpActivity extends AppCompatActivity {
 
-
     private static final String TAG = "FirstActivity";
-    private KeyStoreManager.EncryptModel de;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

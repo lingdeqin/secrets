@@ -24,20 +24,31 @@ import com.lingdeqin.secrets.core.room.entity.Secret;
 import com.lingdeqin.secrets.security.KeyStoreManager;
 import com.lingdeqin.secrets.utils.UIUtil;
 
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleEmitter;
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.core.SingleOnSubscribe;
 import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.internal.subscribers.BlockingBaseSubscriber;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class SecretFragment extends Fragment {
 
     private static final String TAG = "SecretFragment";
     private SecretViewModel mViewModel;
+    private Bundle bundle;
+    private EditText editDomain;
+    private EditText editAccount;
+    private EditText editPassword;
+    private EditText editUrl;
+    private EditText editRemark;
 
-    public static SecretFragment newInstance() {
-        return new SecretFragment();
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        bundle = getArguments();
     }
 
     @Override
@@ -48,12 +59,57 @@ public class SecretFragment extends Fragment {
     }
 
     @Override
-        public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(SecretViewModel.class);
-        // TODO: Use the ViewModel
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        editDomain = getView().findViewById(R.id.edit_domain);
+        editAccount = getView().findViewById(R.id.edit_account);
+        editPassword = getView().findViewById(R.id.edit_password);
+        editUrl = getView().findViewById(R.id.edit_url);
+        editRemark = getView().findViewById(R.id.edit_remark);
+
+        if (bundle != null) {
+            int sid = bundle.getInt("sid");
+            Log.i(TAG, "onCreate: sid = " + sid);
+            AppDatabase appDatabase = AppDatabase.getInstance();
+            Flowable<Secret> secretFlowable =  appDatabase.secretDao().getSecretBySid(sid);
+            secretFlowable.subscribe(new BlockingBaseSubscriber<Secret>() {
+                @Override
+                public void onNext(Secret secret) {
+                    Log.i(TAG, "onNext: secret"+secret.account);
+                    editDomain.setText(secret.domain);
+                    editAccount.setText(secret.account);
+                    //secretPassword.setText(secret.password.toString());
+                    KeyStoreManager.getInstance().decrypt(getActivity(), secret.iv, secret.password, new KeyStoreManager.DecryptCallBack() {
+                        @Override
+                        public void onSuccess(String plain) {
+                            editPassword.setText(plain);
+                        }
+
+                        @Override
+                        public void onFailure(String error) {
+                            Snackbar.make(getView(),"密码解密失败："+error,Snackbar.LENGTH_LONG).show();
+                        }
+                    });
+                    editUrl.setText(secret.url);
+                    editRemark.setText(secret.remark);
+                }
+
+                @Override
+                public void onError(Throwable t) {
+                    Log.i(TAG, "onError: ===="+t.getMessage());
+                }
+            });
+        }
 
     }
+
+//    @Override
+//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+//        super.onActivityCreated(savedInstanceState);
+//        mViewModel = new ViewModelProvider(this).get(SecretViewModel.class);
+//        // TODO: Use the ViewModel
+//
+//    }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -75,18 +131,11 @@ public class SecretFragment extends Fragment {
 
     private void saveSecret(){
 
-        Fragment fragment = this;
         Single.create(new SingleOnSubscribe<Integer>() {
             @Override
             public void subscribe(@io.reactivex.rxjava3.annotations.NonNull SingleEmitter<Integer> emitter) throws Throwable {
 
                 UIUtil.hideKeyboard(getContext(),getView());
-
-                EditText editDomain = getView().findViewById(R.id.edit_domain);
-                EditText editAccount = getView().findViewById(R.id.edit_account);
-                EditText editPassword = getView().findViewById(R.id.edit_password);
-                EditText editUrl = getView().findViewById(R.id.edit_url);
-                EditText editRemark = getView().findViewById(R.id.edit_remark);
 
                 if (editDomain.getText().toString().isEmpty()){
                     Snackbar.make(getView(), "Domain不能为空！", Snackbar.LENGTH_LONG).show();
@@ -104,10 +153,13 @@ public class SecretFragment extends Fragment {
                             secret.password = encryptModel.getCipher();
                             secret.url = editUrl.getText().toString();
                             secret.remark = editRemark.getText().toString();
-
-                            appDatabase.secretDao().insert(secret);
-                            Log.i(TAG, "onSuccess: getIv :"+encryptModel.getIv());
-                            Log.i(TAG, "onSuccess: getCipher :"+encryptModel.getCipher());
+                            if (bundle != null){
+                                int sid = bundle.getInt("sid");
+                                secret.sid = sid;
+                                appDatabase.secretDao().updateSecret(secret);
+                            }else{
+                                appDatabase.secretDao().insert(secret);
+                            }
                             emitter.onSuccess(1);
 
                         }

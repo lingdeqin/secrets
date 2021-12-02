@@ -1,11 +1,14 @@
 package com.lingdeqin.secrets.ui.nosecret;
 
+import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.text.InputType;
 import android.util.Log;
@@ -20,6 +23,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.lingdeqin.secrets.R;
 import com.lingdeqin.secrets.base.MyApplication;
@@ -57,6 +61,7 @@ public class NoSecretFragment extends Fragment {
     private EditText secretRemark;
     private Button btnCopy;
     private Bundle bundle;
+    private FloatingActionButton updateSecret;
 
     public NoSecretFragment() {
         // Required empty public constructor
@@ -70,8 +75,12 @@ public class NoSecretFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onViewCreated(@androidx.annotation.NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        onCreateInit();
+    }
+
+    public void onCreateInit() {
 
         secretDomain = getView().findViewById(R.id.secret_domain);
         secretAccount = getView().findViewById(R.id.secret_account);
@@ -79,6 +88,7 @@ public class NoSecretFragment extends Fragment {
         secretUrl = getView().findViewById(R.id.secret_url);
         secretRemark = getView().findViewById(R.id.secret_remark);
         btnCopy = getView().findViewById(R.id.btn_copy);
+        updateSecret = getView().findViewById(R.id.fab_update_secret);
 
         if (bundle != null) {
             int sid = bundle.getInt("sid");
@@ -157,6 +167,14 @@ public class NoSecretFragment extends Fragment {
                             | InputType.TYPE_TEXT_VARIATION_PASSWORD
                             | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                 }
+            }
+        });
+
+        updateSecret.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceType")
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.nav_secret,bundle);
             }
         });
 

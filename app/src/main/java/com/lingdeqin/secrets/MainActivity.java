@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_secrets, R.id.nav_authenticator, R.id.nav_secret)
+                R.id.nav_secrets, R.id.nav_authenticator)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
                 navController.navigate(R.id.nav_secret);
             }
         });
-
 
     }
 

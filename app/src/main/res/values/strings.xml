@@ -8,6 +8,7 @@
     <string name="menu_authenticator">身份验证器</string>
     <string name="menu_secret">添加</string>
     <string name="menu_no_secret">查看</string>
+    <string name="menu_update_secret">编辑</string>
     <string name="menu_settings">设置</string>
     <string name="menu_delete">删除</string>
     <string name="menu_save">保存</string>
