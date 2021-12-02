@@ -18,8 +18,12 @@
     <fragment
         android:id="@+id/nav_secret"
         android:name="com.lingdeqin.secrets.ui.secret.SecretFragment"
-        android:label="@string/menu_secret"
-        />
+        android:label="{title}">
+        <argument
+            android:name="title"
+            android:defaultValue="添加"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/nav_settings"
         android:name="com.lingdeqin.secrets.ui.settings.SettingsFragment"

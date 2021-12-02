@@ -174,6 +174,7 @@ public class NoSecretFragment extends Fragment {
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View v) {
+                bundle.putString("title","修改");
                 Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.nav_secret,bundle);
             }
         });
