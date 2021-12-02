@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,6 +16,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -66,6 +69,22 @@ public class SecretFragment extends Fragment {
         editPassword = getView().findViewById(R.id.edit_password);
         editUrl = getView().findViewById(R.id.edit_url);
         editRemark = getView().findViewById(R.id.edit_remark);
+
+        CheckBox cb = getView().findViewById(R.id.is_visible_password);
+        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    editPassword.setInputType(InputType.TYPE_CLASS_TEXT
+                            | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                            | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+                } else {
+                    editPassword.setInputType(InputType.TYPE_CLASS_TEXT
+                            | InputType.TYPE_TEXT_VARIATION_PASSWORD
+                            | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+                }
+            }
+        });
 
         if (bundle != null) {
             int sid = bundle.getInt("sid");
@@ -153,7 +172,7 @@ public class SecretFragment extends Fragment {
                             secret.password = encryptModel.getCipher();
                             secret.url = editUrl.getText().toString();
                             secret.remark = editRemark.getText().toString();
-                            if (bundle != null){
+                            if (bundle != null && bundle.containsKey("sid")){
                                 int sid = bundle.getInt("sid");
                                 secret.sid = sid;
                                 appDatabase.secretDao().updateSecret(secret);
