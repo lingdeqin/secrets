@@ -3,6 +3,7 @@ package com.lingdeqin.secrets.ui.secrets;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -71,7 +72,7 @@ public class SecretsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_secrets_list, container, false);
-        fab = getActivity().findViewById(R.id.fab);
+        fab = getActivity().findViewById(R.id.fab_add);
         SecretsFragment secretsFragment = this;
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -99,6 +100,11 @@ public class SecretsFragment extends Fragment {
         parentActivity.navSecret(sid);
     }
 
+    private void fabAdd(Boolean isShow){
+        MainActivity parentActivity = (MainActivity) getActivity();
+        parentActivity.fabAdd(isShow);
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -109,25 +115,23 @@ public class SecretsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume: ");
+        fabAdd(true);
     }
 
+
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Log.i(TAG, "onActivityCreated: ");
-        fab.show();
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //fabAdd(true);
     }
+
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         Log.i(TAG, "onDestroyView: ");
-        fab.hide();
+        fabAdd(false);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.i(TAG, "onDestroy: ");
-    }
+
 }

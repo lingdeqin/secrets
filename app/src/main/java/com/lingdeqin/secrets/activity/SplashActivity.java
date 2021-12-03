@@ -2,6 +2,7 @@ package com.lingdeqin.secrets.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +25,17 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume: ");
+        init();
+    }
+
+    private void init(){
+
         KeyStoreManager keyStoreManager = KeyStoreManager.getInstance();
 
         Intent intent = new Intent();
@@ -36,5 +48,6 @@ public class SplashActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
+
 
 }

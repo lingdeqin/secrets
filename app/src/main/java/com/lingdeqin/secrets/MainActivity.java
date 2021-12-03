@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab_add);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -88,6 +88,14 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putInt("sid", sid);
         navController.navigate(R.id.nav_no_secret,bundle);
+    }
+
+    public void fabAdd(Boolean isShow){
+        if (isShow){
+            fab.show();
+        }else{
+            fab.hide();
+        }
     }
 
     @Override

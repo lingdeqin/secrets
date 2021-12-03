@@ -8,13 +8,11 @@
     <fragment
         android:id="@+id/nav_secrets"
         android:name="com.lingdeqin.secrets.ui.secrets.SecretsFragment"
-        android:label="@string/menu_secrets"
-        tools:layout="@layout/fragment_secrets" />
+        android:label="@string/menu_secrets" />
     <fragment
         android:id="@+id/nav_authenticator"
         android:name="com.lingdeqin.secrets.ui.authenticator.AuthenticatorFragment"
-        android:label="@string/menu_authenticator"
-        tools:layout="@layout/fragment_authenticator" />
+        android:label="@string/menu_authenticator" />
     <fragment
         android:id="@+id/nav_secret"
         android:name="com.lingdeqin.secrets.ui.secret.SecretFragment"
