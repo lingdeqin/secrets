@@ -2,18 +2,21 @@
 
     <PreferenceCategory app:title="@string/header_security">
 
-        <Preference
-            app:key="masterKey"
-            app:title="@string/security_master_key" />
-
-        <Preference
-            app:key="backup"
-            app:title="@string/security_backup"
-            />
-
         <SwitchPreferenceCompat
             app:key="biometric"
             app:title="@string/security_biometric" />
+        <Preference
+            app:key="masterKey"
+            app:title="@string/security_master_key" />
+        <Preference
+            app:key="backup"
+            app:title="@string/security_backup" />
+        <Preference
+            app:key="export"
+            app:title="@string/security_export" />
+        <Preference
+            app:key="import"
+            app:title="@string/security_import" />
 
     </PreferenceCategory>
 

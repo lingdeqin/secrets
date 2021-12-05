@@ -35,9 +35,12 @@
     <string name="header_other">其他</string>
 
     <!-- Security Preferences -->
+    <string name="security_biometric">生物识别</string>
     <string name="security_master_key">更改主密码</string>
     <string name="security_backup">备份</string>
-    <string name="security_biometric">生物识别</string>
+    <string name="security_export">导出</string>
+    <string name="security_import">导入</string>
+
 
     <!-- Other Preferences -->
     <string name="other_about">关于</string>
