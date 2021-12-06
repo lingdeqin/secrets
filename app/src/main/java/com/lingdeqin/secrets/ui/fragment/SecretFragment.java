@@ -23,7 +23,7 @@ import com.lingdeqin.secrets.R;
 import com.lingdeqin.secrets.core.room.AppDatabase;
 import com.lingdeqin.secrets.core.room.entity.Secret;
 import com.lingdeqin.secrets.security.KeyStoreManager;
-import com.lingdeqin.secrets.ui.secret.SecretViewModel;
+import com.lingdeqin.secrets.ui.viewmodel.SecretViewModel;
 import com.lingdeqin.secrets.utils.UIUtil;
 
 import io.reactivex.rxjava3.core.Flowable;

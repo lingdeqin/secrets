@@ -13,7 +13,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.lingdeqin.secrets.R;
-import com.lingdeqin.secrets.ui.authenticator.AuthenticatorViewModel;
+import com.lingdeqin.secrets.ui.viewmodel.AuthenticatorViewModel;
 
 public class AuthenticatorFragment extends Fragment {
 
