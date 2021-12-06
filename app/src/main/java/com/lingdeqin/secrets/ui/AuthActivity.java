@@ -1,18 +1,9 @@
-package com.lingdeqin.secrets.activity;
+package com.lingdeqin.secrets.ui;
 
-import static androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG;
-import static androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.biometric.BiometricManager;
-import androidx.biometric.BiometricPrompt;
-import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.security.keystore.KeyProperties;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -20,34 +11,23 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.android.material.snackbar.Snackbar;
-import com.lingdeqin.secrets.MainActivity;
 import com.lingdeqin.secrets.R;
 import com.lingdeqin.secrets.security.AuthManager;
 import com.lingdeqin.secrets.security.KeyStoreManager;
 import com.lingdeqin.secrets.utils.SecretUtil;
 
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
-import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Executor;
 
 import javax.crypto.AEADBadTagException;
 import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
 public class AuthActivity extends AppCompatActivity {
 

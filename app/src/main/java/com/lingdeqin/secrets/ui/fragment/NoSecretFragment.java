@@ -1,4 +1,4 @@
-package com.lingdeqin.secrets.ui.nosecret;
+package com.lingdeqin.secrets.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.ClipData;

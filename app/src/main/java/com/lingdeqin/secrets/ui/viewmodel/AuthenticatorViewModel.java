@@ -1,4 +1,4 @@
-package com.lingdeqin.secrets.ui.authenticator;
+package com.lingdeqin.secrets.ui.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

@@ -1,4 +1,4 @@
-package com.lingdeqin.secrets.ui.settings;
+package com.lingdeqin.secrets.ui.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

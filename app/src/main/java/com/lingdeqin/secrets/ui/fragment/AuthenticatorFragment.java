@@ -1,4 +1,4 @@
-package com.lingdeqin.secrets.ui.authenticator;
+package com.lingdeqin.secrets.ui.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.lingdeqin.secrets.R;
+import com.lingdeqin.secrets.ui.authenticator.AuthenticatorViewModel;
 
 public class AuthenticatorFragment extends Fragment {
 

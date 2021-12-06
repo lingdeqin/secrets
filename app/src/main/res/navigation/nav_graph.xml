@@ -7,15 +7,15 @@
 
     <fragment
         android:id="@+id/nav_secrets"
-        android:name="com.lingdeqin.secrets.ui.secrets.SecretsFragment"
+        android:name="com.lingdeqin.secrets.ui.fragment.SecretsFragment"
         android:label="@string/menu_secrets" />
     <fragment
         android:id="@+id/nav_authenticator"
-        android:name="com.lingdeqin.secrets.ui.authenticator.AuthenticatorFragment"
+        android:name="com.lingdeqin.secrets.ui.fragment.AuthenticatorFragment"
         android:label="@string/menu_authenticator" />
     <fragment
         android:id="@+id/nav_secret"
-        android:name="com.lingdeqin.secrets.ui.secret.SecretFragment"
+        android:name="com.lingdeqin.secrets.ui.fragment.SecretFragment"
         android:label="{title}">
         <argument
             android:name="title"
@@ -24,17 +24,17 @@
     </fragment>
     <fragment
         android:id="@+id/nav_settings"
-        android:name="com.lingdeqin.secrets.ui.settings.SettingsFragment"
+        android:name="com.lingdeqin.secrets.ui.fragment.SettingsFragment"
         android:label="@string/menu_settings"
         />
     <fragment
         android:id="@+id/nav_no_secret"
-        android:name="com.lingdeqin.secrets.ui.nosecret.NoSecretFragment"
+        android:name="com.lingdeqin.secrets.ui.fragment.NoSecretFragment"
         android:label="@string/menu_no_secret"
         />
     <fragment
         android:id="@+id/nav_backup_setting"
-        android:name="com.lingdeqin.secrets.ui.settings.BackupFragment"
+        android:name="com.lingdeqin.secrets.ui.fragment.BackupFragment"
         android:label="@string/security_backup"
         />
 

@@ -1,4 +1,4 @@
-package com.lingdeqin.secrets.viewmodel;
+package com.lingdeqin.secrets.ui.viewmodel;
 
 import android.app.Application;
 

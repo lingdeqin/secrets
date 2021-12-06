@@ -1,11 +1,10 @@
-package com.lingdeqin.secrets.ui.secrets;
+package com.lingdeqin.secrets.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,10 +18,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.lingdeqin.secrets.MainActivity;
+import com.lingdeqin.secrets.ui.MainActivity;
 import com.lingdeqin.secrets.R;
 import com.lingdeqin.secrets.core.room.entity.Secret;
-import com.lingdeqin.secrets.viewmodel.SecretsViewModel;
+import com.lingdeqin.secrets.ui.adapter.MySecretsRecyclerViewAdapter;
+import com.lingdeqin.secrets.ui.viewmodel.SecretsViewModel;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.lingdeqin.secrets;
+package com.lingdeqin.secrets.ui;
 
 import android.annotation.SuppressLint;
 import android.content.ClipboardManager;
@@ -12,6 +12,7 @@ import android.view.Menu;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.lingdeqin.secrets.R;
 import com.lingdeqin.secrets.base.MyApplication;
 import com.lingdeqin.secrets.core.room.AppDatabase;
 import com.lingdeqin.secrets.core.room.entity.Secret;

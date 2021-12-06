@@ -1,4 +1,4 @@
-package com.lingdeqin.secrets.ui.settings;
+package com.lingdeqin.secrets.ui.fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -19,6 +18,8 @@ import androidx.preference.PreferenceManager;
 import com.lingdeqin.secrets.R;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
+
+    private static final String TAG = "SettingsFragment";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,8 +47,5 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
     }
-
-
-
 
 }

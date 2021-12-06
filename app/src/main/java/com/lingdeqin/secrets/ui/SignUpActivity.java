@@ -1,4 +1,4 @@
-package com.lingdeqin.secrets.activity;
+package com.lingdeqin.secrets.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +13,6 @@ import android.widget.EditText;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.android.material.snackbar.Snackbar;
-import com.lingdeqin.secrets.MainActivity;
 import com.lingdeqin.secrets.R;
 import com.lingdeqin.secrets.security.KeyStoreManager;
 import com.lingdeqin.secrets.utils.SecretUtil;
@@ -48,7 +46,7 @@ public class SignUpActivity extends AppCompatActivity {
                 WeakReference<EditText> repwdEdit = new WeakReference<EditText>(findViewById(R.id.edit_main_re_password));
                 WeakReference<EditText> slatEdit = new WeakReference<EditText>(findViewById(R.id.edit_salt));
                 WeakReference<EditText> reslatEdit = new WeakReference<EditText>(findViewById(R.id.edit_re_salt));
-
+//
                 WeakReference<String> pwd = new WeakReference<String>(pwdEdit.get().getText().toString());
                 WeakReference<String> repwd = new WeakReference<String>(repwdEdit.get().getText().toString());
                 WeakReference<String> slat = new WeakReference<String>(slatEdit.get().getText().toString());
