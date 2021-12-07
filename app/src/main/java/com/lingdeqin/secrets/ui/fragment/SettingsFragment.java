@@ -32,14 +32,28 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
         setMenuVisibility(true);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Preference bp = findPreference("backup");
-        bp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+        //更改主密钥
+        Preference masterKey = findPreference("masterKey");
+        masterKey.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.nav_change_master_key);
+                return false;
+            }
+        });
+
+        //备份
+        Preference backup = findPreference("backup");
+        backup.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.nav_backup_setting);
                 return false;
             }
         });
+
+
     }
 
     @Override

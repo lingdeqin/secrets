@@ -12,6 +12,7 @@ import com.lingdeqin.secrets.core.room.entity.Secret;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Single;
 
 
 @Dao
@@ -28,6 +29,9 @@ public interface SecretDao {
 
     @Query("SELECT * FROM secret")
     Flowable<Secret> getSecretByRxJava();
+
+    @Query("SELECT * FROM secret")
+    Single<List<Secret>> getSecretBySingle();
 
     @Query("SELECT * FROM secret")
     LiveData<List<Secret>> getSecretByLiveData();

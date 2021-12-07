@@ -37,5 +37,9 @@
         android:name="com.lingdeqin.secrets.ui.fragment.BackupFragment"
         android:label="@string/security_backup"
         />
-
+    <fragment
+        android:id="@+id/nav_change_master_key"
+        android:name="com.lingdeqin.secrets.ui.fragment.ChangeMasterKeyFragment"
+        android:label="@string/security_master_key"
+        />
 </navigation>
