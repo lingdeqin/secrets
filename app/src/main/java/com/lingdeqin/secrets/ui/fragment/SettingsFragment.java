@@ -1,5 +1,7 @@
 package com.lingdeqin.secrets.ui.fragment;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -54,12 +56,44 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
 
+        //导出
+        Preference export = findPreference("export");
+        export.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                startExport();
+                return false;
+            }
+        });
+
+        //导入
+        Preference mImport = findPreference("import");
+        mImport.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+
+                return false;
+            }
+        });
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
+    }
+
+    private void startExport(){
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT)
+                .addCategory(Intent.CATEGORY_OPENABLE)
+                .setType("application/json")
+                .putExtra(Intent.EXTRA_TITLE, "export");
+        try {
+            startActivityForResult(intent, 0, null);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 }
