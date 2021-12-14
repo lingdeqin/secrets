@@ -46,6 +46,8 @@
     <string name="other_about">关于</string>
 
     <string name="backup_OneDrive">OneDrive</string>
+    <string name="backup_GoogleDrive">Google Drive</string>
+    <string name="backup_GoogleDriveSignOut">Google Drive Sign Out</string>
 
 
     <string name="master_key_old">原主密码</string>

@@ -6,6 +6,14 @@
             app:key="OneDrive"
             app:title="@string/backup_OneDrive" />
 
+        <Preference
+            app:key="GoogleDrive"
+            app:title="@string/backup_GoogleDrive" />
+
+        <Preference
+            app:key="GoogleDriveSignOut"
+            app:title="@string/backup_GoogleDriveSignOut" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
