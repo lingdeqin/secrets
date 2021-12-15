@@ -25,11 +25,19 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.lingdeqin.secrets.R;
 
+import java.util.Collections;
+
 public class BackupFragment extends PreferenceFragmentCompat {
 
+    private static final String TAG = "BackupFragment";
     private ActivityResultLauncher googleSignLauncher;
 
     @Override
@@ -42,7 +50,7 @@ public class BackupFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.backup_preferences, rootKey);
 
-        //备份
+        //GoogleDrive
         Preference GoogleDrive = findPreference("GoogleDrive");
         GoogleDrive.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -53,7 +61,6 @@ public class BackupFragment extends PreferenceFragmentCompat {
             }
         });
 
-        //备份
         Preference GoogleDriveSignOut = findPreference("GoogleDriveSignOut");
         GoogleDriveSignOut.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -76,9 +83,37 @@ public class BackupFragment extends PreferenceFragmentCompat {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        googleSignLauncher = registerForActivityResult(new ActivityResultForGoogleSign(), new ActivityResultCallback<Uri>() {
+        googleSignLauncher = registerForActivityResult(new ActivityResultForGoogleSign(), new ActivityResultCallback<Intent>() {
             @Override
-            public void onActivityResult(Uri result) {
+            public void onActivityResult(Intent result) {
+
+                GoogleSignIn.getSignedInAccountFromIntent(result)
+                        .addOnSuccessListener(googleAccount -> {
+                            Log.d(TAG, "Signed in as " + googleAccount.getEmail());
+
+                            // Use the authenticated account to sign in to the Drive service.
+                            GoogleAccountCredential credential =
+                                    GoogleAccountCredential.usingOAuth2(
+                                            getContext(), Collections.singleton(DriveScopes.DRIVE_FILE));
+                            credential.setSelectedAccount(googleAccount.getAccount());
+                            Drive googleDriveService =
+                                    new Drive.Builder(
+                                            AndroidHttp.newCompatibleTransport(),
+                                            new GsonFactory(),
+                                            credential)
+                                            .setApplicationName("Drive API Migration")
+                                            .build();
+
+                            mDriveServiceHelper = new DriveServiceHelper(googleDriveService);
+                            mDriveServiceHelper.createFile().addOnSuccessListener(new OnSuccessListener<String>() {
+                                @Override
+                                public void onSuccess(String s) {
+                                    Log.i(TAG, "onSuccess: "+ s);
+                                }
+                            });
+
+                        })
+                        .addOnFailureListener(exception -> Log.e(TAG, "Unable to sign in.", exception));
 
             }
         });
@@ -86,7 +121,7 @@ public class BackupFragment extends PreferenceFragmentCompat {
 
     }
 
-    public static class ActivityResultForGoogleSign extends ActivityResultContract<String, Uri> {
+    public static class ActivityResultForGoogleSign extends ActivityResultContract<String, Intent> {
 
         @NonNull
         @Override
@@ -102,10 +137,10 @@ public class BackupFragment extends PreferenceFragmentCompat {
         }
 
         @Override
-        public Uri parseResult(int resultCode, @Nullable Intent intent) {
-            if (intent == null || resultCode != Activity.RESULT_OK) return null;
-            return intent.getData();
+        public Intent parseResult(int resultCode, @Nullable Intent intent) {
+            return intent;
         }
+
     }
 
 }
