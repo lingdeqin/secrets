@@ -1,9 +1,7 @@
 package com.lingdeqin.secrets.ui.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,11 +15,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.navigation.Navigation;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
@@ -32,6 +30,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.lingdeqin.secrets.R;
+import com.lingdeqin.secrets.helper.GoogleDriveHelper;
 
 import java.util.Collections;
 
@@ -87,34 +86,20 @@ public class BackupFragment extends PreferenceFragmentCompat {
             @Override
             public void onActivityResult(Intent result) {
 
-                GoogleSignIn.getSignedInAccountFromIntent(result)
-                        .addOnSuccessListener(googleAccount -> {
-                            Log.d(TAG, "Signed in as " + googleAccount.getEmail());
+                GoogleDriveHelper.getInstance().googleSignIn(result, new GoogleDriveHelper.GoogleSignInListener() {
+                    @Override
+                    public void onSuccessCallBack(GoogleSignInAccount googleSignInAccount) {
+                        
+                    }
+                    @Override
+                    public void onCanceledCallBack() {
 
-                            // Use the authenticated account to sign in to the Drive service.
-                            GoogleAccountCredential credential =
-                                    GoogleAccountCredential.usingOAuth2(
-                                            getContext(), Collections.singleton(DriveScopes.DRIVE_FILE));
-                            credential.setSelectedAccount(googleAccount.getAccount());
-                            Drive googleDriveService =
-                                    new Drive.Builder(
-                                            AndroidHttp.newCompatibleTransport(),
-                                            new GsonFactory(),
-                                            credential)
-                                            .setApplicationName("Drive API Migration")
-                                            .build();
+                    }
+                    @Override
+                    public void onFailureCallBack(Exception e) {
 
-                            mDriveServiceHelper = new DriveServiceHelper(googleDriveService);
-                            mDriveServiceHelper.createFile().addOnSuccessListener(new OnSuccessListener<String>() {
-                                @Override
-                                public void onSuccess(String s) {
-                                    Log.i(TAG, "onSuccess: "+ s);
-                                }
-                            });
-
-                        })
-                        .addOnFailureListener(exception -> Log.e(TAG, "Unable to sign in.", exception));
-
+                    }
+                });
             }
         });
 
@@ -126,14 +111,7 @@ public class BackupFragment extends PreferenceFragmentCompat {
         @NonNull
         @Override
         public Intent createIntent(@NonNull Context context, String input) {
-            GoogleSignInOptions signInOptions =
-                    new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestEmail()
-                            .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
-                            .build();
-            GoogleSignInClient client = GoogleSignIn.getClient(context, signInOptions);
-
-            return client.getSignInIntent();
+            return GoogleDriveHelper.getInstance().getSignInIntent(context);
         }
 
         @Override
