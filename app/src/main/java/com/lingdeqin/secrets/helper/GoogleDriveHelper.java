@@ -10,10 +10,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
 
+import java.io.IOException;
 import java.util.Collections;
 
 public class GoogleDriveHelper {
@@ -30,7 +34,7 @@ public class GoogleDriveHelper {
         return instance;
     }
 
-    public void googleSignIn(Intent signInIntent, GoogleSignInListener googleSignInListener){
+    public void signIn(Intent signInIntent, GoogleSignInListener googleSignInListener){
         GoogleSignIn.getSignedInAccountFromIntent(signInIntent)
                 .addOnSuccessListener(googleAccount -> {
                     googleSignInAccount = googleAccount;
@@ -40,6 +44,43 @@ public class GoogleDriveHelper {
                 }).addOnFailureListener(e -> {
                     googleSignInListener.onFailureCallBack(e);
                 });
+    }
+
+    public String fileCreate(Context context,String fileName, String content) throws IOException {
+        File file = new File()
+                .setParents(Collections.singletonList("root"))
+                .setMimeType("application/json")
+                .setName(fileName);
+        return create(context,file,content);
+    }
+
+    public String create(Context context, File file) throws IOException {
+        File driveFile = getDrive(context).files().create(file).execute();
+        if (driveFile == null) {
+            throw new IOException("上传文件异常.");
+        }
+        return driveFile.getId();
+    }
+    public String create(Context context, File file, String content) throws IOException {
+        ByteArrayContent contentStream = ByteArrayContent.fromString("application/json", content);
+        return create(context,file,contentStream);
+    }
+
+    public String create(Context context, File file, byte[] content) throws IOException {
+        ByteArrayContent contentStream = new ByteArrayContent("application/json",content);
+        return create(context,file,contentStream);
+    }
+
+    public String create(Context context, File file, ByteArrayContent contentStream) throws IOException {
+        File driveFile = getDrive(context).files().create(file,contentStream).execute();
+        if (driveFile == null) {
+            throw new IOException("上传文件异常.");
+        }
+        return driveFile.getId();
+    }
+
+    public FileList list(Context context) throws IOException {
+        return getDrive(context).files().list().setSpaces("drive").execute();
     }
 
     public GoogleSignInOptions getGoogleSignInOptions(){

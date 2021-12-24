@@ -18,26 +18,34 @@ import androidx.annotation.Nullable;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.alibaba.fastjson.JSON;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.DriveScopes;
+import com.google.android.gms.drive.DriveFolder;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
 import com.lingdeqin.secrets.R;
+import com.lingdeqin.secrets.core.room.AppDatabase;
+import com.lingdeqin.secrets.core.room.entity.Secret;
 import com.lingdeqin.secrets.helper.GoogleDriveHelper;
 
+import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleEmitter;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.core.SingleOnSubscribe;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class BackupFragment extends PreferenceFragmentCompat {
 
     private static final String TAG = "BackupFragment";
-    private ActivityResultLauncher googleSignLauncher;
+    private ActivityResultLauncher<String> googleSignLauncher;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,6 +59,10 @@ public class BackupFragment extends PreferenceFragmentCompat {
 
         //GoogleDrive
         Preference GoogleDrive = findPreference("GoogleDrive");
+        GoogleSignInAccount googleSignInAccount = GoogleDriveHelper.getInstance().getGoogleSignInAccount(getContext());
+        if (googleSignInAccount != null){
+            GoogleDrive.setSummary(googleSignInAccount.getEmail());
+        }
         GoogleDrive.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -64,7 +76,29 @@ public class BackupFragment extends PreferenceFragmentCompat {
         GoogleDriveSignOut.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
+                Single.create(new SingleOnSubscribe<Integer>() {
+                    @Override
+                    public void subscribe(@io.reactivex.rxjava3.annotations.NonNull SingleEmitter<Integer> emitter) throws Throwable {
 
+                    }
+                }).subscribeOn(Schedulers.io())
+                        .observeOn(Schedulers.newThread())
+                        .subscribe(new SingleObserver<Integer>() {
+                            @Override
+                            public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Integer integer) {
+
+                            }
+
+                            @Override
+                            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+
+                            }
+                        });
                 return false;
             }
         });
@@ -86,18 +120,76 @@ public class BackupFragment extends PreferenceFragmentCompat {
             @Override
             public void onActivityResult(Intent result) {
 
-                GoogleDriveHelper.getInstance().googleSignIn(result, new GoogleDriveHelper.GoogleSignInListener() {
+                GoogleDriveHelper.getInstance().signIn(result, new GoogleDriveHelper.GoogleSignInListener() {
                     @Override
                     public void onSuccessCallBack(GoogleSignInAccount googleSignInAccount) {
-                        
+                        Snackbar.make(getView(),"欢迎登录"+googleSignInAccount.getEmail(),Snackbar.LENGTH_LONG);
+                        Log.i(TAG, "onSuccessCallBack: 欢迎登录"+googleSignInAccount.getEmail());
+                        Single.create(new SingleOnSubscribe<Integer>() {
+                            @Override
+                            public void subscribe(@io.reactivex.rxjava3.annotations.NonNull SingleEmitter<Integer> emitter) throws Throwable {
+                                try {
+
+                                    FileList fileList = GoogleDriveHelper.getInstance().list(getContext());
+                                    String folderId = null;
+                                    for (File driveFile:fileList.getFiles()) {
+                                        Log.i(TAG, "subscribe: driveFile.name="+driveFile.getName());
+                                        Log.i(TAG, "subscribe: driveFile.MimeType="+driveFile.getMimeType());
+                                        if (driveFile.getMimeType().equals(DriveFolder.MIME_TYPE) && driveFile.getName().equals("SecretsBackup")){
+                                            folderId = driveFile.getId();
+                                        }
+                                    }
+                                    if (folderId == null){
+                                        File folder = new File()
+                                                .setParents(Collections.singletonList("root"))
+                                                .setMimeType(DriveFolder.MIME_TYPE)
+                                                .setName("SecretsBackup");
+                                        folderId = GoogleDriveHelper.getInstance().create(getContext(),folder);
+                                    }
+                                    Log.i(TAG, "onSuccessCallBack: folderId="+folderId);
+                                    File file = new File()
+                                            .setParents(Collections.singletonList(folderId))
+                                            .setMimeType("application/json")
+                                            .setName("secret.json");
+                                    List<Secret> secrets = AppDatabase.getInstance().secretDao().getAll();
+                                    Map<String,Object> data = new HashMap<>();
+                                    data.put("secrets",secrets);
+
+                                    String fileId = GoogleDriveHelper.getInstance().create(getContext(),file,JSON.toJSONBytes(data));
+                                    Log.i(TAG, "onSuccessCallBack: fileId="+fileId);
+                                    emitter.onSuccess(1);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    emitter.onError(e);
+                                }
+                            }
+                        }).subscribeOn(Schedulers.io())
+                                .observeOn(Schedulers.newThread())
+                                .subscribe(new SingleObserver<Integer>() {
+                                    @Override
+                                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+
+                                    }
+                                    @Override
+                                    public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Integer integer) {
+                                        Log.i(TAG, "onSuccess: 创建文件成功");
+
+                                    }
+                                    @Override
+                                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+
+                                    }
+                                });
+
+
                     }
                     @Override
                     public void onCanceledCallBack() {
-
+                        Log.i(TAG, "onCanceledCallBack: ");
                     }
                     @Override
                     public void onFailureCallBack(Exception e) {
-
+                        Log.e(TAG, "onFailureCallBack: ", e);
                     }
                 });
             }
