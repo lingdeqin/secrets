@@ -62,6 +62,8 @@ public class BackupFragment extends PreferenceFragmentCompat {
         GoogleSignInAccount googleSignInAccount = GoogleDriveHelper.getInstance().getGoogleSignInAccount(getContext());
         if (googleSignInAccount != null){
             GoogleDrive.setSummary(googleSignInAccount.getEmail());
+        }else{
+            GoogleDrive.setSummary("点击登录");
         }
         GoogleDrive.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -71,39 +73,7 @@ public class BackupFragment extends PreferenceFragmentCompat {
                 return false;
             }
         });
-
-        Preference GoogleDriveSignOut = findPreference("GoogleDriveSignOut");
-        GoogleDriveSignOut.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Single.create(new SingleOnSubscribe<Integer>() {
-                    @Override
-                    public void subscribe(@io.reactivex.rxjava3.annotations.NonNull SingleEmitter<Integer> emitter) throws Throwable {
-
-                    }
-                }).subscribeOn(Schedulers.io())
-                        .observeOn(Schedulers.newThread())
-                        .subscribe(new SingleObserver<Integer>() {
-                            @Override
-                            public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-
-                            }
-
-                            @Override
-                            public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Integer integer) {
-
-                            }
-
-                            @Override
-                            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-
-                            }
-                        });
-                return false;
-            }
-        });
-
-
+        
     }
 
     @Override

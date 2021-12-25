@@ -1,19 +1,12 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/security_backup">
+    <Preference
+        app:key="OneDrive"
+        app:title="@string/backup_OneDrive" />
 
-        <Preference
-            app:key="OneDrive"
-            app:title="@string/backup_OneDrive" />
+    <Preference
+        app:key="GoogleDrive"
+        app:title="@string/backup_GoogleDrive" />
 
-        <Preference
-            app:key="GoogleDrive"
-            app:title="@string/backup_GoogleDrive" />
-
-        <Preference
-            app:key="GoogleDriveSignOut"
-            app:title="@string/backup_GoogleDriveSignOut" />
-
-    </PreferenceCategory>
 
 </PreferenceScreen>
