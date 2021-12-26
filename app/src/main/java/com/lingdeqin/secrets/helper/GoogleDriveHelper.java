@@ -14,6 +14,7 @@ import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.drive.model.About;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 
@@ -82,6 +83,13 @@ public class GoogleDriveHelper {
     public FileList list(Context context) throws IOException {
         return getDrive(context).files().list().setSpaces("drive").execute();
     }
+
+    public About about(Context context) throws IOException {
+        Drive.About.Get get = getDrive(context).about().get();
+        get.setFields("user,storageQuota");
+        return get.execute();
+    }
+
 
     public GoogleSignInOptions getGoogleSignInOptions(){
         return new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

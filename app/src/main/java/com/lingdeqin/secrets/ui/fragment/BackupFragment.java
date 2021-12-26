@@ -15,6 +15,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+import androidx.fragment.app.DialogFragment;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
@@ -22,12 +24,14 @@ import com.alibaba.fastjson.JSON;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.drive.DriveFolder;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.api.services.drive.model.About;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.lingdeqin.secrets.R;
 import com.lingdeqin.secrets.core.room.AppDatabase;
 import com.lingdeqin.secrets.core.room.entity.Secret;
 import com.lingdeqin.secrets.helper.GoogleDriveHelper;
+import com.lingdeqin.secrets.ui.dialog.GoogleAccountDialogFragment;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -35,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleEmitter;
 import io.reactivex.rxjava3.core.SingleObserver;
@@ -59,21 +64,55 @@ public class BackupFragment extends PreferenceFragmentCompat {
 
         //GoogleDrive
         Preference GoogleDrive = findPreference("GoogleDrive");
+        Preference GoogleDriveInfo = findPreference("GoogleDriveInfo");
         GoogleSignInAccount googleSignInAccount = GoogleDriveHelper.getInstance().getGoogleSignInAccount(getContext());
         if (googleSignInAccount != null){
-            GoogleDrive.setSummary(googleSignInAccount.getEmail());
-        }else{
-            GoogleDrive.setSummary("点击登录");
+            GoogleDriveInfo.setTitle(googleSignInAccount.getEmail());
+            Single.create(new SingleOnSubscribe<About>() {
+                @Override
+                public void subscribe(@io.reactivex.rxjava3.annotations.NonNull SingleEmitter<About> emitter) throws Throwable {
+                    About about = GoogleDriveHelper.getInstance().about(getContext());
+
+                    emitter.onSuccess(about);
+                }
+            }).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new SingleObserver<About>() {
+                        @Override
+                        public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+                        }
+                        @Override
+                        public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull About about) {
+                            GoogleDriveInfo.setTitle(about.getUser().getEmailAddress());
+                            Log.i(TAG, "subscribe: about.getStorageQuota="+about.getStorageQuota());
+                            Log.i(TAG, "subscribe: about.getUser="+about.getUser());
+                            Log.i(TAG, "subscribe: about.about.getUser().getEmailAddress()="+about.getUser().getEmailAddress());
+
+                            long limit = about.getStorageQuota().getLimit()/(1024*1024*1024);
+                            long usage = about.getStorageQuota().getUsage()/(1024*1024);
+                            Log.i(TAG, "subscribe: "+usage+" MB/"+limit+" GB");
+                            GoogleDriveInfo.setSummary(usage+" MB / "+limit+" GB");
+
+                        }
+
+                        @Override
+                        public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                        }
+                    });
         }
-        GoogleDrive.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        GoogleDriveInfo.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Log.i("TAG", "onPreferenceClick: GoogleDrive=======");
-                googleSignLauncher.launch("");
+                //googleSignLauncher.launch("");
+
+                GoogleAccountDialogFragment dialog = new GoogleAccountDialogFragment();
+//                dialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
+                dialog.show(getParentFragmentManager(),"test");
                 return false;
             }
         });
-        
+
     }
 
     @Override
@@ -127,6 +166,7 @@ public class BackupFragment extends PreferenceFragmentCompat {
 
                                     String fileId = GoogleDriveHelper.getInstance().create(getContext(),file,JSON.toJSONBytes(data));
                                     Log.i(TAG, "onSuccessCallBack: fileId="+fileId);
+
                                     emitter.onSuccess(1);
                                 } catch (IOException e) {
                                     e.printStackTrace();

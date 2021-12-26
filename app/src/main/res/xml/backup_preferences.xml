@@ -1,12 +1,29 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Preference
-        app:key="OneDrive"
-        app:title="@string/backup_OneDrive" />
+    <PreferenceCategory>
+        <SwitchPreference
+            app:key="OneDrive"
+            app:defaultValue="false"
+            app:title="@string/backup_OneDrive" />
+        <Preference
+            app:dependency="OneDrive"
+            app:key="OneDriveInfo"
+            app:title="@string/login" />
+    </PreferenceCategory>
 
-    <Preference
-        app:key="GoogleDrive"
-        app:title="@string/backup_GoogleDrive" />
+    <PreferenceCategory>
+        <SwitchPreference
+            app:key="GoogleDrive"
+            app:defaultValue="false"
+            app:title="@string/backup_GoogleDrive" />
+
+        <Preference
+            app:dependency="GoogleDrive"
+            app:key="GoogleDriveInfo"
+            app:title="@string/login" />
+    </PreferenceCategory>
+
+
 
 
 </PreferenceScreen>

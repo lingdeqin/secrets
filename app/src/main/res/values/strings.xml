@@ -47,7 +47,6 @@
 
     <string name="backup_OneDrive">OneDrive</string>
     <string name="backup_GoogleDrive">Google Drive</string>
-    <string name="backup_GoogleDriveSignOut">Google Drive Sign Out</string>
 
 
     <string name="master_key_old">原主密码</string>
@@ -55,4 +54,8 @@
     <string name="master_key_new_again">确认新主密码</string>
     <string name="master_key_warning">警告：如果忘记主密码，将永久失去此密钥库</string>
     <string name="show_master_key">显示密码</string>
+
+    <string name="login">登录</string>
+    <string name="logout">登录</string>
+
 </resources>
