@@ -8,6 +8,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.tasks.Task;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.ByteArrayContent;
@@ -47,8 +48,10 @@ public class GoogleDriveHelper {
                 });
     }
 
-    public Boolean signOut(Context context){
-        return getGoogleSignInClient(context).signOut().isSuccessful();
+    public Task<Void> signOut(Context context){
+        googleSignInAccount = null;
+        drive = null;
+        return getGoogleSignInClient(context).signOut();
     }
 
     public String fileCreate(Context context,String fileName, String content) throws IOException {

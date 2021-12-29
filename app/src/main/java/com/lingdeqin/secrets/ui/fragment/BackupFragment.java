@@ -57,7 +57,7 @@ public class BackupFragment extends PreferenceFragmentCompat{
 
     private static final String TAG = "BackupFragment";
     private ActivityResultLauncher<String> googleSignLauncher;
-
+    Preference GoogleDriveInfo;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
@@ -70,10 +70,9 @@ public class BackupFragment extends PreferenceFragmentCompat{
 
         // GoogleDrive
         Preference GoogleDrive = findPreference("GoogleDrive");
-        Preference GoogleDriveInfo = findPreference("GoogleDriveInfo");
+        GoogleDriveInfo = findPreference("GoogleDriveInfo");
         GoogleSignInAccount googleSignInAccount = GoogleDriveHelper.getInstance().getGoogleSignInAccount(getContext());
         if (googleSignInAccount != null){
-            GoogleDriveInfo.setTitle(googleSignInAccount.getEmail());
             Single.create(new SingleOnSubscribe<About>() {
                 @Override
                 public void subscribe(@io.reactivex.rxjava3.annotations.NonNull SingleEmitter<About> emitter) throws Throwable {
@@ -112,20 +111,13 @@ public class BackupFragment extends PreferenceFragmentCompat{
                         @Override
                         public void onClick(AlertDialog dialog, int which) {
                             Log.i(TAG, "onListClick: which=="+which);
-                            GoogleDriveHelper.getInstance().getGoogleSignInClient(getContext())
-                                    .signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            GoogleDriveHelper.getInstance().signOut(getContext()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    GoogleDriveHelper.getInstance().getGoogleSignInClient(getContext())
-                                            .revokeAccess().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (which == 0){
-                                                googleSignLauncher.launch("");
-                                            }
-                                        }
-                                    });
-
+                                    updateUI();
+                                    if (which == 0){
+                                        googleSignLauncher.launch("");
+                                    }
                                 }
                             });
                         }
@@ -147,16 +139,8 @@ public class BackupFragment extends PreferenceFragmentCompat{
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         googleSignLauncher = registerForActivityResult(new ActivityResultForGoogleSign(), new ActivityResultCallback<Intent>() {
             @Override
             public void onActivityResult(Intent result) {
@@ -205,7 +189,7 @@ public class BackupFragment extends PreferenceFragmentCompat{
                                 }
                             }
                         }).subscribeOn(Schedulers.io())
-                                .observeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new SingleObserver<Integer>() {
                                     @Override
                                     public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
@@ -237,6 +221,15 @@ public class BackupFragment extends PreferenceFragmentCompat{
         });
 
 
+    }
+
+    private void updateUI(){
+        GoogleSignInAccount googleSignInAccount = GoogleDriveHelper.getInstance().getGoogleSignInAccount(getContext());
+        if (googleSignInAccount != null) {
+            GoogleDriveInfo.setTitle(googleSignInAccount.getEmail());
+        }else{
+            GoogleDriveInfo.setTitle(R.string.login);
+        }
     }
 
     public static class ActivityResultForGoogleSign extends ActivityResultContract<String, Intent> {
