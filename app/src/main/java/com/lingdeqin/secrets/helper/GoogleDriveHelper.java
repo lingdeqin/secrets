@@ -117,7 +117,7 @@ public class GoogleDriveHelper {
         if (drive == null){
             GoogleAccountCredential credential =
                     GoogleAccountCredential.usingOAuth2(context,
-                            Collections.singleton(DriveScopes.DRIVE_FILE));
+                            Collections.singleton(DriveScopes.DRIVE));
             credential.setSelectedAccount(getGoogleSignInAccount(context).getAccount());
             drive = new Drive.Builder(
                             AndroidHttp.newCompatibleTransport(),

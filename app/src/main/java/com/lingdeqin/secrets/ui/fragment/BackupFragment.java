@@ -64,6 +64,7 @@ public class BackupFragment extends PreferenceFragmentCompat{
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.backup_preferences, rootKey);
@@ -71,13 +72,20 @@ public class BackupFragment extends PreferenceFragmentCompat{
         // GoogleDrive
         Preference GoogleDrive = findPreference("GoogleDrive");
         GoogleDriveInfo = findPreference("GoogleDriveInfo");
+        updateUI();
         GoogleSignInAccount googleSignInAccount = GoogleDriveHelper.getInstance().getGoogleSignInAccount(getContext());
         if (googleSignInAccount != null){
             Single.create(new SingleOnSubscribe<About>() {
                 @Override
                 public void subscribe(@io.reactivex.rxjava3.annotations.NonNull SingleEmitter<About> emitter) throws Throwable {
-                    About about = GoogleDriveHelper.getInstance().about(getContext());
-                    emitter.onSuccess(about);
+                    try {
+                        About about = GoogleDriveHelper.getInstance().about(getContext());
+                        emitter.onSuccess(about);
+                    }catch (IOException e){
+                        emitter.onError(e);
+                    }
+
+
                 }
             }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -95,6 +103,9 @@ public class BackupFragment extends PreferenceFragmentCompat{
 
                         @Override
                         public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                            e.printStackTrace();
+                            Log.i(TAG, "onError: " + e.getMessage());
+
                         }
                     });
         }
@@ -110,7 +121,6 @@ public class BackupFragment extends PreferenceFragmentCompat{
                     dialog.setListener(new GoogleAccountDialogFragment.GoogleAccountDialogListener() {
                         @Override
                         public void onClick(AlertDialog dialog, int which) {
-                            Log.i(TAG, "onListClick: which=="+which);
                             GoogleDriveHelper.getInstance().signOut(getContext()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -148,65 +158,8 @@ public class BackupFragment extends PreferenceFragmentCompat{
                 GoogleDriveHelper.getInstance().signIn(result, new GoogleDriveHelper.GoogleSignInListener() {
                     @Override
                     public void onSuccessCallBack(GoogleSignInAccount googleSignInAccount) {
-                        Snackbar.make(getView(),"欢迎登录"+googleSignInAccount.getEmail(),Snackbar.LENGTH_LONG);
-                        Log.i(TAG, "onSuccessCallBack: 欢迎登录"+googleSignInAccount.getEmail());
-                        Single.create(new SingleOnSubscribe<Integer>() {
-                            @Override
-                            public void subscribe(@io.reactivex.rxjava3.annotations.NonNull SingleEmitter<Integer> emitter) throws Throwable {
-                                try {
-
-                                    FileList fileList = GoogleDriveHelper.getInstance().list(getContext());
-                                    String folderId = null;
-                                    for (File driveFile:fileList.getFiles()) {
-                                        if (driveFile.getMimeType().equals(DriveFolder.MIME_TYPE)
-                                                && driveFile.getName().equals("SecretsBackup")){
-                                            folderId = driveFile.getId();
-                                        }
-                                    }
-                                    if (folderId == null){
-                                        File folder = new File()
-                                                .setParents(Collections.singletonList("root"))
-                                                .setMimeType(DriveFolder.MIME_TYPE)
-                                                .setName("SecretsBackup");
-                                        folderId = GoogleDriveHelper.getInstance().create(getContext(),folder);
-                                    }
-                                    Log.i(TAG, "onSuccessCallBack: folderId="+folderId);
-                                    File file = new File()
-                                            .setParents(Collections.singletonList(folderId))
-                                            .setMimeType("application/json")
-                                            .setName("secret.json");
-                                    List<Secret> secrets = AppDatabase.getInstance().secretDao().getAll();
-                                    Map<String,Object> data = new HashMap<>();
-                                    data.put("secrets",secrets);
-
-                                    String fileId = GoogleDriveHelper.getInstance().create(getContext(),file,JSON.toJSONBytes(data));
-                                    Log.i(TAG, "onSuccessCallBack: fileId="+fileId);
-
-                                    emitter.onSuccess(1);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    emitter.onError(e);
-                                }
-                            }
-                        }).subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new SingleObserver<Integer>() {
-                                    @Override
-                                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-
-                                    }
-                                    @Override
-                                    public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Integer integer) {
-                                        Log.i(TAG, "onSuccess: 创建文件成功");
-
-                                    }
-                                    @Override
-                                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-
-                                    }
-                                });
-
-
+                        Snackbar.make(getView(),"欢迎登录"+googleSignInAccount.getEmail(),Snackbar.LENGTH_LONG).show();
+                        updateUI();
                     }
                     @Override
                     public void onCanceledCallBack() {
@@ -229,7 +182,66 @@ public class BackupFragment extends PreferenceFragmentCompat{
             GoogleDriveInfo.setTitle(googleSignInAccount.getEmail());
         }else{
             GoogleDriveInfo.setTitle(R.string.login);
+            GoogleDriveInfo.setSummary(null);
         }
+    }
+
+    private void backup(){
+        Single.create(new SingleOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(@io.reactivex.rxjava3.annotations.NonNull SingleEmitter<Integer> emitter) throws Throwable {
+                try {
+
+                    FileList fileList = GoogleDriveHelper.getInstance().list(getContext());
+                    String folderId = null;
+                    for (File driveFile:fileList.getFiles()) {
+                        if (driveFile.getMimeType().equals(DriveFolder.MIME_TYPE)
+                                && driveFile.getName().equals("SecretsBackup")){
+                            folderId = driveFile.getId();
+                        }
+                    }
+                    if (folderId == null){
+                        File folder = new File()
+                                .setParents(Collections.singletonList("root"))
+                                .setMimeType(DriveFolder.MIME_TYPE)
+                                .setName("SecretsBackup");
+                        folderId = GoogleDriveHelper.getInstance().create(getContext(),folder);
+                    }
+                    Log.i(TAG, "onSuccessCallBack: folderId="+folderId);
+                    File file = new File()
+                            .setParents(Collections.singletonList(folderId))
+                            .setMimeType("application/json")
+                            .setName("secret.json");
+                    List<Secret> secrets = AppDatabase.getInstance().secretDao().getAll();
+                    Map<String,Object> data = new HashMap<>();
+                    data.put("secrets",secrets);
+
+                    String fileId = GoogleDriveHelper.getInstance().create(getContext(),file,JSON.toJSONBytes(data));
+                    Log.i(TAG, "onSuccessCallBack: fileId="+fileId);
+
+                    emitter.onSuccess(1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    emitter.onError(e);
+                }
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<Integer>() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+
+                    }
+                    @Override
+                    public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Integer integer) {
+                        Log.i(TAG, "onSuccess: 创建文件成功");
+
+                    }
+                    @Override
+                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+
+                    }
+                });
     }
 
     public static class ActivityResultForGoogleSign extends ActivityResultContract<String, Intent> {
