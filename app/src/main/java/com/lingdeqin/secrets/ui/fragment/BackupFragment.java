@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,16 +21,11 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.alibaba.fastjson.JSON;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.About;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
@@ -70,7 +66,6 @@ public class BackupFragment extends PreferenceFragmentCompat{
         setPreferencesFromResource(R.xml.backup_preferences, rootKey);
 
         // GoogleDrive
-        Preference GoogleDrive = findPreference("GoogleDrive");
         GoogleDriveInfo = findPreference("GoogleDriveInfo");
         updateUI();
         GoogleSignInAccount googleSignInAccount = GoogleDriveHelper.getInstance().getGoogleSignInAccount(getContext());
@@ -146,6 +141,19 @@ public class BackupFragment extends PreferenceFragmentCompat{
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
+        inflater.inflate(R.menu.cloud_upload, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.menu_cloud_upload:
+                Log.i(TAG, "onOptionsItemSelected: ");
+                backup();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -234,8 +242,7 @@ public class BackupFragment extends PreferenceFragmentCompat{
                     }
                     @Override
                     public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Integer integer) {
-                        Log.i(TAG, "onSuccess: 创建文件成功");
-
+                        Snackbar.make(getView(),R.string.cloud_upload_success,Snackbar.LENGTH_LONG).show();
                     }
                     @Override
                     public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {

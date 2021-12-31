@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_menu"
+    tools:showIn="navigation_view">
+    <item
+        android:id="@+id/menu_cloud_upload"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_cloud_upload"
+        android:iconTint="@color/white"
+
+        android:iconTintMode="src_over"
+        android:title="@string/cloud_upload"
+        app:showAsAction="always" />
+</menu>

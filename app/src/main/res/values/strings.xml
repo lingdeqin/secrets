@@ -58,4 +58,7 @@
     <string name="login">登录</string>
     <string name="logout">登录</string>
 
+    <string name="cloud_upload">云上传</string>
+    <string name="cloud_upload_success">云备份成功</string>
+
 </resources>
