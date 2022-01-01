@@ -20,26 +20,17 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
-import com.alibaba.fastjson.JSON;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.api.services.drive.model.About;
-import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
 import com.lingdeqin.secrets.R;
-import com.lingdeqin.secrets.core.room.AppDatabase;
-import com.lingdeqin.secrets.core.room.entity.Secret;
 import com.lingdeqin.secrets.helper.GoogleDriveHelper;
+import com.lingdeqin.secrets.task.GoogleDriveUploadTask;
 import com.lingdeqin.secrets.ui.dialog.GoogleAccountDialogFragment;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
@@ -189,66 +180,14 @@ public class BackupFragment extends PreferenceFragmentCompat{
         if (googleSignInAccount != null) {
             GoogleDriveInfo.setTitle(googleSignInAccount.getEmail());
         }else{
-            GoogleDriveInfo.setTitle(R.string.login);
+            GoogleDriveInfo.setTitle(getString(R.string.login));
             GoogleDriveInfo.setSummary(null);
         }
     }
 
     private void backup(){
-        Single.create(new SingleOnSubscribe<Integer>() {
-            @Override
-            public void subscribe(@io.reactivex.rxjava3.annotations.NonNull SingleEmitter<Integer> emitter) throws Throwable {
-                try {
-
-                    FileList fileList = GoogleDriveHelper.getInstance().list(getContext());
-                    String folderId = null;
-                    for (File driveFile:fileList.getFiles()) {
-                        if (driveFile.getMimeType().equals(DriveFolder.MIME_TYPE)
-                                && driveFile.getName().equals("SecretsBackup")){
-                            folderId = driveFile.getId();
-                        }
-                    }
-                    if (folderId == null){
-                        File folder = new File()
-                                .setParents(Collections.singletonList("root"))
-                                .setMimeType(DriveFolder.MIME_TYPE)
-                                .setName("SecretsBackup");
-                        folderId = GoogleDriveHelper.getInstance().create(getContext(),folder);
-                    }
-                    Log.i(TAG, "onSuccessCallBack: folderId="+folderId);
-                    File file = new File()
-                            .setParents(Collections.singletonList(folderId))
-                            .setMimeType("application/json")
-                            .setName("secret.json");
-                    List<Secret> secrets = AppDatabase.getInstance().secretDao().getAll();
-                    Map<String,Object> data = new HashMap<>();
-                    data.put("secrets",secrets);
-
-                    String fileId = GoogleDriveHelper.getInstance().create(getContext(),file,JSON.toJSONBytes(data));
-                    Log.i(TAG, "onSuccessCallBack: fileId="+fileId);
-
-                    emitter.onSuccess(1);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    emitter.onError(e);
-                }
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<Integer>() {
-                    @Override
-                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-
-                    }
-                    @Override
-                    public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Integer integer) {
-                        Snackbar.make(getView(),R.string.cloud_upload_success,Snackbar.LENGTH_LONG).show();
-                    }
-                    @Override
-                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-
-                    }
-                });
+        GoogleDriveUploadTask googleDriveUploadTask = new GoogleDriveUploadTask(getContext());
+        googleDriveUploadTask.start();
     }
 
     public static class ActivityResultForGoogleSign extends ActivityResultContract<String, Intent> {
