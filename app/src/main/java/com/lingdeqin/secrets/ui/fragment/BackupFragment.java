@@ -28,6 +28,7 @@ import com.google.api.services.drive.model.About;
 import com.lingdeqin.secrets.R;
 import com.lingdeqin.secrets.helper.GoogleDriveHelper;
 import com.lingdeqin.secrets.task.GoogleDriveUploadTask;
+import com.lingdeqin.secrets.task.ZeroTask;
 import com.lingdeqin.secrets.ui.dialog.GoogleAccountDialogFragment;
 
 import java.io.IOException;
@@ -45,12 +46,13 @@ public class BackupFragment extends PreferenceFragmentCompat{
     private static final String TAG = "BackupFragment";
     private ActivityResultLauncher<String> googleSignLauncher;
     Preference GoogleDriveInfo;
+    GoogleDriveUploadTask googleDriveUploadTask;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
-
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -70,8 +72,6 @@ public class BackupFragment extends PreferenceFragmentCompat{
                     }catch (IOException e){
                         emitter.onError(e);
                     }
-
-
                 }
             }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -171,8 +171,6 @@ public class BackupFragment extends PreferenceFragmentCompat{
                 });
             }
         });
-
-
     }
 
     private void updateUI(){
@@ -186,8 +184,32 @@ public class BackupFragment extends PreferenceFragmentCompat{
     }
 
     private void backup(){
-        GoogleDriveUploadTask googleDriveUploadTask = new GoogleDriveUploadTask(getContext());
-        googleDriveUploadTask.start();
+        googleDriveUploadTask = new GoogleDriveUploadTask(getContext());
+        googleDriveUploadTask.addTaskListener(new ZeroTask.TaskCallBack() {
+            @Override
+            public void onComplete() {
+                Log.i(TAG, "备份完成");
+                Snackbar.make(getView(),"备份完成", Snackbar.LENGTH_LONG).show();
+            }
+        }).start();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        taskCancel();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        taskCancel();
+    }
+
+    public void taskCancel(){
+        if (googleDriveUploadTask != null){
+            googleDriveUploadTask.cancel(false);
+        }
     }
 
     public static class ActivityResultForGoogleSign extends ActivityResultContract<String, Intent> {
@@ -204,5 +226,7 @@ public class BackupFragment extends PreferenceFragmentCompat{
         }
 
     }
+
+
 
 }

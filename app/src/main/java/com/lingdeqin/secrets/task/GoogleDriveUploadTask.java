@@ -2,7 +2,6 @@ package com.lingdeqin.secrets.task;
 
 
 import android.content.Context;
-import android.util.Log;
 
 import com.lingdeqin.secrets.helper.BackupHelper;
 
@@ -26,6 +25,17 @@ public class GoogleDriveUploadTask extends ZeroTask{
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected void onComplete() {
+
+    }
+
+    @Override
+    protected void onError(Exception e) {
+
+    }
+
 
 }
 

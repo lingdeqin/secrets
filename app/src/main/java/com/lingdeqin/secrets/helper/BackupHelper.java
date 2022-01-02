@@ -1,13 +1,11 @@
 package com.lingdeqin.secrets.helper;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.google.android.gms.drive.DriveFolder;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
-import com.lingdeqin.secrets.R;
 import com.lingdeqin.secrets.core.room.AppDatabase;
 import com.lingdeqin.secrets.core.room.entity.Secret;
 import com.lingdeqin.secrets.entity.BackupEntity;
@@ -47,12 +45,14 @@ public class BackupHelper {
                 .setParents(Collections.singletonList(folderId))
                 .setMimeType(MIME_TYPE_JSON)
                 .setName(getBackupFileName());
-        List<Secret> secrets = AppDatabase.getInstance().secretDao().getAll();
+        return GoogleDriveHelper.getInstance().create(context,file, JSON.toJSONBytes(getBackupEntity()));
+    }
 
+    public static BackupEntity getBackupEntity() {
+        List<Secret> secrets = AppDatabase.getInstance().secretDao().getAll();
         BackupEntity backupEntity = new BackupEntity();
         backupEntity.setSecrets(secrets);
-
-        return GoogleDriveHelper.getInstance().create(context,file, JSON.toJSONBytes(backupEntity));
+        return backupEntity;
     }
 
     public static String getBackupFileName() {
