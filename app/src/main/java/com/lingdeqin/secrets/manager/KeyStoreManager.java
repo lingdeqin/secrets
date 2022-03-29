@@ -1,4 +1,4 @@
-package com.lingdeqin.secrets.security;
+package com.lingdeqin.secrets.manager;
 
 import android.app.Activity;
 import android.security.keystore.KeyProperties;
@@ -29,10 +29,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class KeyStoreManager {
 
-    private static final String TAG = "SecretUtil";
+    private static final String TAG = "KeyStoreManager";
     private static final String MASTER_KEY = "MasterKey";
     private static KeyStoreManager instance;
-    private static final Object lock = new Object();
     private KeyStore keyStore;
 
 
@@ -45,13 +44,9 @@ public class KeyStoreManager {
         }
     }
 
-    public static KeyStoreManager getInstance(){
+    public synchronized static KeyStoreManager getInstance(){
         if (instance == null){
-            synchronized (lock){
-                if (instance == null){
-                    instance = new KeyStoreManager();
-                }
-            }
+            instance = new KeyStoreManager();
         }
         return instance;
     }

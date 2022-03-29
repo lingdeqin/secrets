@@ -15,8 +15,8 @@ import android.widget.EditText;
 import com.alibaba.fastjson.JSONObject;
 import com.google.android.material.snackbar.Snackbar;
 import com.lingdeqin.secrets.R;
-import com.lingdeqin.secrets.security.AuthManager;
-import com.lingdeqin.secrets.security.KeyStoreManager;
+import com.lingdeqin.secrets.manager.AuthManager;
+import com.lingdeqin.secrets.manager.KeyStoreManager;
 import com.lingdeqin.secrets.utils.SecretUtil;
 
 import java.math.BigInteger;

@@ -29,7 +29,7 @@ import com.lingdeqin.secrets.R;
 import com.lingdeqin.secrets.base.MyApplication;
 import com.lingdeqin.secrets.core.room.AppDatabase;
 import com.lingdeqin.secrets.core.room.entity.Secret;
-import com.lingdeqin.secrets.security.KeyStoreManager;
+import com.lingdeqin.secrets.manager.KeyStoreManager;
 
 import java.util.concurrent.TimeUnit;
 
@@ -37,7 +37,6 @@ import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
-import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleEmitter;
 import io.reactivex.rxjava3.core.SingleObserver;

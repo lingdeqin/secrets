@@ -22,7 +22,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.lingdeqin.secrets.R;
 import com.lingdeqin.secrets.core.room.AppDatabase;
 import com.lingdeqin.secrets.core.room.entity.Secret;
-import com.lingdeqin.secrets.security.KeyStoreManager;
+import com.lingdeqin.secrets.manager.KeyStoreManager;
 import com.lingdeqin.secrets.ui.viewmodel.SecretViewModel;
 import com.lingdeqin.secrets.utils.UIUtil;
 

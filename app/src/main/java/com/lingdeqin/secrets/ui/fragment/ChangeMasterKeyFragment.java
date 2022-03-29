@@ -1,11 +1,8 @@
 package com.lingdeqin.secrets.ui.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.security.keystore.KeyProperties;
-import android.security.keystore.UserNotAuthenticatedException;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +14,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.alibaba.fastjson.JSONObject;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.lingdeqin.secrets.R;
 import com.lingdeqin.secrets.core.room.AppDatabase;
 import com.lingdeqin.secrets.core.room.entity.Secret;
-import com.lingdeqin.secrets.security.AuthManager;
-import com.lingdeqin.secrets.security.KeyStoreManager;
-import com.lingdeqin.secrets.ui.MainActivity;
+import com.lingdeqin.secrets.manager.KeyStoreManager;
 import com.lingdeqin.secrets.utils.SecretUtil;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
